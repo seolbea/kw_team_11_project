@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JLPT 필수 단어</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #007BFF; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 5px 0; font-size: 18px; }
+        .load-more {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .load-more:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="levelTitle">필수 단어</h1>
+    <ul id="wordList">
+        <!-- 단어 목록이 여기에 동적으로 추가됨 -->
+    </ul>
+    <button id="loadMore" class="load-more" onclick="loadMoreWords()">더보기</button>
+
+    <script>
+        // 난이도별 단어 데이터
+        const words = {
+            n1: "src/n1.csv",
+            n2: "src/n2.csv",
+            n3: "src/n3.csv",
+            n4: "src/n4.csv",
+            n5: "src/n5.csv"
+        };
+
+        // URL에서 난이도(level) 매개변수 가져오기
+        const params = new URLSearchParams(window.location.search);
+        const level = params.get('level');
+
+        // 페이지에 단어 표시
+        const levelTitle = document.getElementById('levelTitle');
+        const wordList = document.getElementById('wordList');
+        const loadMoreButton = document.getElementById('loadMore');
+        
+        let allWords = [];
+        let currentIndex = 0;
+
+        if (level && words[level]) {
+            levelTitle.textContent = `${level.toUpperCase()} 필수 단어`;
+
+            // CSV 파일 로드
+            console.log("Loading file:", words[level]);
+            fetch(words[level]) // 파이썬으로 로컬 서버를 열어서 동작해야 함
+                .then(response => response.text())
+                .then(csvData => {
+                    allWords = parseCSV(csvData);
+                    displayWords();
+                })
+                .catch(error => {
+                    console.error('CSV 로드 실패:', error);
+                    wordList.innerHTML = "<li>단어 목록을 불러오는 데 실패했습니다.</li>";
+                });
+
+        } else {
+            levelTitle.textContent = "잘못된 요청입니다.";
+            wordList.innerHTML = "<li>해당 난이도의 단어를 찾을 수 없습니다.</li>";
+            loadMoreButton.style.display = "none"; // 더보기 버튼 숨기기
+        }
+
+        // CSV 파싱 함수
+        function parseCSV(csv) {
+            const rows = csv.split("\n");
+            return rows.map(row => {
+                const columns = row.split(",");
+                return {
+                    expression: columns[0],  // 단어
+                    reading: columns[1],     // 발음
+                    meaning: columns[2]      // 의미
+                };
+            }).filter(item => item.expression && item.reading && item.meaning); // 빈 항목은 필터링
+        }
+
+        // 단어 10개씩 표시
+        function displayWords() {
+            const wordsToShow = allWords.slice(currentIndex, currentIndex + 10);
+            wordsToShow.forEach(wordObj => {
+                const listItem = document.createElement('li');
+                listItem.textContent = `${wordObj.expression} (${wordObj.reading}) - ${wordObj.meaning}`;
+                wordList.appendChild(listItem);
+            });
+            currentIndex += 10;
+
+            if (currentIndex >= allWords.length) {
+                loadMoreButton.style.display = "none"; // 더 이상 표시할 단어가 없으면 "더보기" 버튼 숨기기
+            }
+        }
+
+        // 더보기 버튼 클릭 시 추가 단어 로드
+        function loadMoreWords() {
+            displayWords();
+        }
+    </script>
+</body>
+</html>

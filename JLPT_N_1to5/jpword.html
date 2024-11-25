@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JLPT 필수 단어</title>
+    <style>
+        .level-tag {
+            display: inline-block;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 18px;
+            color: white;
+            background-color: #007BFF;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .level-tag:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>JLPT 필수 단어 조회</h1>
+    <div>
+        <div class="level-tag" onclick="navigateToLevel('n1')">N1</div>
+        <div class="level-tag" onclick="navigateToLevel('n2')">N2</div>
+        <div class="level-tag" onclick="navigateToLevel('n3')">N3</div>
+        <div class="level-tag" onclick="navigateToLevel('n4')">N4</div>
+        <div class="level-tag" onclick="navigateToLevel('n5')">N5</div>
+    </div>
+
+    <script>
+        function navigateToLevel(level) {
+            // 난이도에 따라 URL 변경
+            window.location.href = `words.html?level=${level}`;
+        }
+    </script>
+</body>
+</html>
