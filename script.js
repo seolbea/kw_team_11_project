@@ -33,6 +33,16 @@ searchButton.addEventListener("click", ()=>{
     }
 })
 
+document.addEventListener("DOMContentLoaded", () => {
+    // N1 ~ N5 버튼에 클릭 이벤트 추가
+    document.querySelectorAll(".sub-button").forEach((button, index) => {
+        button.addEventListener("click", () => {
+            const levels = ["N1", "N2", "N3", "N4", "N5"];
+            // JLPT_N_1to5 폴더 내 words.html로 이동, level 파라미터 전달
+            location.href = `JLPT_N_1to5/words.html?level=${levels[index].toLowerCase()}`;
+        });
+    });
+});
 
 
 

@@ -7,29 +7,48 @@
     <style>
         body { font-family: Arial, sans-serif; padding: 20px; }
         h1 { color: #007BFF; }
-        ul { list-style-type: none; padding: 0; }
-        li { margin: 5px 0; font-size: 18px; }
-        .load-more {
-            display: inline-block;
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f4f4f4; color: #333; }
+        .pagination {
+            display: flex;
+            justify-content: center;
             margin-top: 20px;
-            padding: 10px 20px;
+        }
+        .pagination button {
+            margin: 0 5px;
+            padding: 8px 12px;
             font-size: 16px;
             background-color: #007BFF;
             color: white;
-            cursor: pointer;
+            border: none;
             border-radius: 5px;
+            cursor: pointer;
         }
-        .load-more:hover {
+        .pagination button:hover {
             background-color: #0056b3;
+        }
+        .pagination button.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
     <h1 id="levelTitle">필수 단어</h1>
-    <ul id="wordList">
-        <!-- 단어 목록이 여기에 동적으로 추가됨 -->
-    </ul>
-    <button id="loadMore" class="load-more" onclick="loadMoreWords()">더보기</button>
+    <table>
+        <thead>
+            <tr>
+                <th>단어</th>
+                <th>발음</th>
+                <th>의미</th>
+            </tr>
+        </thead>
+        <tbody id="wordTableBody">
+            <!-- 단어 목록이 여기에 동적으로 추가됨 -->
+        </tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
 
     <script>
         // 난이도별 단어 데이터
@@ -45,34 +64,36 @@
         const params = new URLSearchParams(window.location.search);
         const level = params.get('level');
 
-        // 페이지에 단어 표시
+        // 페이지 요소
         const levelTitle = document.getElementById('levelTitle');
-        const wordList = document.getElementById('wordList');
-        const loadMoreButton = document.getElementById('loadMore');
-        
+        const wordTableBody = document.getElementById('wordTableBody');
+        const pagination = document.getElementById('pagination');
+
         let allWords = [];
-        let currentIndex = 0;
+        let currentPage = 1;
+        const wordsPerPage = 10;
 
         if (level && words[level]) {
             levelTitle.textContent = `${level.toUpperCase()} 필수 단어`;
 
             // CSV 파일 로드
-            console.log("Loading file:", words[level]);
-            fetch(words[level]) // 파이썬으로 로컬 서버를 열어서 동작해야 함
+            // 로컬 서버 구동 
+            // python -m http.server 8000
+            // http://localhost:8000/index.html
+            fetch(words[level])
                 .then(response => response.text())
                 .then(csvData => {
                     allWords = parseCSV(csvData);
-                    displayWords();
+                    renderPage(currentPage); // 첫 번째 페이지 렌더링
                 })
                 .catch(error => {
                     console.error('CSV 로드 실패:', error);
-                    wordList.innerHTML = "<li>단어 목록을 불러오는 데 실패했습니다.</li>";
+                    wordTableBody.innerHTML = "<tr><td colspan='3'>단어 목록을 불러오는 데 실패했습니다.</td></tr>";
                 });
 
         } else {
             levelTitle.textContent = "잘못된 요청입니다.";
-            wordList.innerHTML = "<li>해당 난이도의 단어를 찾을 수 없습니다.</li>";
-            loadMoreButton.style.display = "none"; // 더보기 버튼 숨기기
+            wordTableBody.innerHTML = "<tr><td colspan='3'>해당 난이도의 단어를 찾을 수 없습니다.</td></tr>";
         }
 
         // CSV 파싱 함수
@@ -88,24 +109,46 @@
             }).filter(item => item.expression && item.reading && item.meaning); // 빈 항목은 필터링
         }
 
-        // 단어 10개씩 표시
-        function displayWords() {
-            const wordsToShow = allWords.slice(currentIndex, currentIndex + 10);
-            wordsToShow.forEach(wordObj => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${wordObj.expression} (${wordObj.reading}) - ${wordObj.meaning}`;
-                wordList.appendChild(listItem);
-            });
-            currentIndex += 10;
+        // 현재 페이지의 단어를 렌더링
+        function renderPage(page) {
+            const startIndex = (page - 1) * wordsPerPage;
+            const endIndex = startIndex + wordsPerPage;
+            const wordsToShow = allWords.slice(startIndex, endIndex);
 
-            if (currentIndex >= allWords.length) {
-                loadMoreButton.style.display = "none"; // 더 이상 표시할 단어가 없으면 "더보기" 버튼 숨기기
-            }
+            // 테이블 데이터 초기화
+            wordTableBody.innerHTML = "";
+
+            wordsToShow.forEach(wordObj => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${wordObj.expression}</td>
+                    <td>${wordObj.reading}</td>
+                    <td>${wordObj.meaning}</td>
+                `;
+                wordTableBody.appendChild(row);
+            });
+
+            renderPagination(); // 페이지네이션 갱신
         }
 
-        // 더보기 버튼 클릭 시 추가 단어 로드
-        function loadMoreWords() {
-            displayWords();
+        // 페이지네이션 렌더링
+        function renderPagination() {
+            const totalPages = Math.ceil(allWords.length / wordsPerPage);
+            pagination.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                button.classList.toggle("disabled", i === currentPage);
+                button.disabled = i === currentPage;
+
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    renderPage(currentPage);
+                });
+
+                pagination.appendChild(button);
+            }
         }
     </script>
 </body>
