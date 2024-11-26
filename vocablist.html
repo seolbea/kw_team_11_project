@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>나만의 단어장</title>
+    <link rel="stylesheet" href="vocablist.css">
+</head>
+<body>
+    <h2>나만의 단어장</h2>
+    <div class="vocab-container">
+        <div class="vocab-form">
+            <div id="wordBox" class="word-box">
+                <!-- 랜덤 단어 표시 -->
+                <p id="currentWord">word1</p>
+            </div>
+            <div class="button-group">
+                <button id="checkBtn" class="check-button">check</button>
+                <button id="xBtn" class="x-button">X</button>
+            </div>
+        </div>
+        <ul class="vocab-list" id="vocabList">
+            <!-- 추가된 단어 -->
+        </ul>
+    </div>
+    <script src="vocablist.js"></script>
+</body>
+</html>
