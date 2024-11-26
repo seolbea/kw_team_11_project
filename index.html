@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPDictionary</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <!-- 상단바 -->
+        <nav class="navbar">
+            <div class="dropdown">
+                <button class="dropdown-button" id="examButton">등급별 단어 시험</button>
+                <button class="simple-button">나만의 단어장</button>
+                <button class="simple-button">추가기능1</button>
+                <button class="simple-button">추가기능2</button>
+            </div>
+            <div>
+                <button class="login-button" id="loginButton">Login / Sign Up</button>
+            </div>
+        </nav>
+        <!-- 단어 시험 클릭 시 등급 선택 바 -->
+        <nav class="sub-navbar hidden" id="subNavbar">
+            <button class="sub-button">N1</button>
+            <button class="sub-button">N2</button>
+            <button class="sub-button">N3</button>
+            <button class="sub-button">N4</button>
+            <button class="sub-button">N5</button>
+        </nav>
+        <h1>일본어 사전</h1>
+    </header>
+    <main>
+        <!-- 사전, 로그인창, 단어장 UI -->
+        <h2>검색</h2>
+        <div class="search-container">
+            <section class="search-wrapper">
+                <input type="text" id="searchBox" placeholder="" />
+                <button id="searchButton">
+                    <!-- 돋보기 SVG 아이콘 -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#FF6347">
+                        <path d="M10 2C5.59 2 2 5.59 2 10s3.59 8 8 8c1.61 0 3.1-.49 4.33-1.34l5.37 5.37 1.41-1.41-5.37-5.37C17.51 13.1 18 11.61 18 10c0-4.41-3.59-8-8-8zm0 2c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6z"/>
+                    </svg>
+                </button>
+            </section>
+        </div>
+        
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
