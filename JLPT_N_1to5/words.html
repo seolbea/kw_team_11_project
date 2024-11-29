@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JLPT 필수 단어</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        h1 { color: #007BFF; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+        .pagination { margin-top: 20px; text-align: center; }
+        .pagination button { margin: 0 5px; padding: 5px 10px; cursor: pointer; }
+        .pagination button.disabled { background-color: #ddd; cursor: not-allowed; }
+        .pagination .arrow { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1 id="levelTitle">필수 단어</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>단어</th>
+                <th>발음</th>
+                <th>의미</th>
+            </tr>
+        </thead>
+        <tbody id="wordTableBody">
+            <!-- 단어 목록이 여기에 동적으로 추가됨 -->
+        </tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+        // 난이도별 단어 데이터
+        const words = {
+            n1: "src/n1.csv",
+            n2: "src/n2.csv",
+            n3: "src/n3.csv",
+            n4: "src/n4.csv",
+            n5: "src/n5.csv"
+        };
+
+        // URL에서 난이도(level) 매개변수 가져오기
+        const params = new URLSearchParams(window.location.search);
+        const level = params.get('level');
+
+        // 페이지 요소
+        const levelTitle = document.getElementById('levelTitle');
+        const wordTableBody = document.getElementById('wordTableBody');
+        const pagination = document.getElementById('pagination');
+
+        let allWords = [];
+        let currentPage = 1;
+        const wordsPerPage = 10;
+
+        if (level && words[level]) {
+            levelTitle.textContent = `${level.toUpperCase()} 필수 단어`;
+
+            // CSV 파일 로드
+            fetch(words[level])
+                .then(response => response.text())
+                .then(csvData => {
+                    allWords = parseCSV(csvData);
+                    renderPage(currentPage); // 첫 번째 페이지 렌더링
+                })
+                .catch(error => {
+                    console.error('CSV 로드 실패:', error);
+                    wordTableBody.innerHTML = "<tr><td colspan='3'>단어 목록을 불러오는 데 실패했습니다.</td></tr>";
+                });
+        } else {
+            levelTitle.textContent = "잘못된 요청입니다.";
+            wordTableBody.innerHTML = "<tr><td colspan='3'>해당 난이도의 단어를 찾을 수 없습니다.</td></tr>";
+        }
+        // python -m http.server 8000
+        // http://localhost:8000/index.html
+        // CSV 파싱 함수
+        function parseCSV(csv) {
+            const rows = csv.split("\n").filter(row => row.trim() !== ""); // 공백 줄 필터링
+            rows.shift(); // 첫 번째 줄(헤더) 제거
+
+            return rows.map(row => {
+                // 정규식: 큰따옴표 내부의 텍스트와 일반 텍스트를 올바르게 분리
+                const columns = row.match(/"(.*?)"|([^",]+)/g) || [];
+                return {
+                    expression: columns[0]?.replace(/"/g, "").trim(), // 단어
+                    reading: columns[1]?.replace(/"/g, "").trim(),    // 발음
+                    meaning: columns[2]?.replace(/"/g, "").trim()     // 의미
+                };
+            }).filter(item => item.expression && item.reading && item.meaning); // 빈 항목은 필터링
+        }
+
+
+
+
+        // 현재 페이지의 단어를 렌더링
+        function renderPage(page) {
+            const startIndex = (page - 1) * wordsPerPage;
+            const endIndex = startIndex + wordsPerPage;
+            const wordsToShow = allWords.slice(startIndex, endIndex);
+
+            // 테이블 데이터 초기화
+            wordTableBody.innerHTML = "";
+
+            wordsToShow.forEach(wordObj => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${wordObj.expression}</td>
+                    <td>${wordObj.reading}</td>
+                    <td>${wordObj.meaning}</td>
+                `;
+                wordTableBody.appendChild(row);
+            });
+
+            renderPagination(); // 페이지네이션 갱신
+        }
+
+        // 페이지네이션 렌더링
+        function renderPagination() {
+            const totalPages = Math.ceil(allWords.length / wordsPerPage);
+            const maxPagesToShow = 10;
+            const startPage = Math.floor((currentPage - 1) / maxPagesToShow) * maxPagesToShow + 1;
+            const endPage = Math.min(startPage + maxPagesToShow - 1, totalPages);
+
+            pagination.innerHTML = "";
+
+            // << 및 < 버튼
+            if (startPage > 1) {
+                const firstPageButton = document.createElement('button');
+                firstPageButton.textContent = "<<";
+                firstPageButton.classList.add("arrow");
+                firstPageButton.addEventListener('click', () => {
+                    currentPage = 1;
+                    renderPage(currentPage);
+                });
+                pagination.appendChild(firstPageButton);
+
+                const prevButton = document.createElement('button');
+                prevButton.textContent = "<";
+                prevButton.classList.add("arrow");
+                prevButton.addEventListener('click', () => {
+                    currentPage = startPage - 1;
+                    renderPage(currentPage);
+                });
+                pagination.appendChild(prevButton);
+            }
+
+            // 중간 페이지 버튼
+            for (let i = startPage; i <= endPage; i++) {
+                const button = document.createElement('button');
+                button.textContent = i;
+                if (i === currentPage) {
+                    button.classList.add("disabled");
+                    button.disabled = true;
+                }
+                button.addEventListener('click', () => {
+                    currentPage = i;
+                    renderPage(currentPage);
+                });
+                pagination.appendChild(button);
+            }
+
+            // > 및 >> 버튼
+            if (endPage < totalPages) {
+                const nextButton = document.createElement('button');
+                nextButton.textContent = ">";
+                nextButton.classList.add("arrow");
+                nextButton.addEventListener('click', () => {
+                    currentPage = endPage + 1;
+                    renderPage(currentPage);
+                });
+                pagination.appendChild(nextButton);
+
+                const lastPageButton = document.createElement('button');
+                lastPageButton.textContent = ">>";
+                lastPageButton.classList.add("arrow");
+                lastPageButton.addEventListener('click', () => {
+                    currentPage = totalPages;
+                    renderPage(currentPage);
+                });
+                pagination.appendChild(lastPageButton);
+            }
+        }
+    </script>
+</body>
+</html>
