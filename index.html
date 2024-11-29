@@ -11,9 +11,9 @@
         <!-- 상단바 -->
         <nav class="navbar">
             <div class="dropdown">
-                <button class="dropdown-button" id="NButton">등급별 단어</button>
-                <button class="simple-button">나만의 단어장</button>
-                <button class="simple-button" id="examButton">등급별 단어 시험</button>
+                <button class="dropdown-button" id="examButton">등급별 단어 시험</button>
+                <button class="simple-button" id="vocabButton">나만의 단어장</button>
+                <button class="simple-button">추가기능1</button>
                 <button class="simple-button">추가기능2</button>
             </div>
             <div>
@@ -28,33 +28,57 @@
             <button class="sub-button">N4</button>
             <button class="sub-button">N5</button>
         </nav>
-        <!-- 팝업 컨테이너 -->
-        <div class="popup-overlay" id="popupOverlay"></div>
-        <div id="popupContainer">
-            <h3>시험할 난이도를 선택하세요</h3>
-            <div id="difficultyButtons">
-                <!-- 난이도 버튼 동적 추가 -->
-            </div>
-            <button id="closePopup">닫기</button>
-        </div>
         <h1>일본어 사전</h1>
     </header>
     <main>
-        <!-- 사전, 로그인창, 단어장 UI -->
+        <!-- 검색창 -->
         <h2>검색</h2>
         <div class="search-container">
             <section class="search-wrapper">
-                <input type="text" id="searchBox" placeholder="" />
+                <input type="text" id="searchBox" placeholder="검색어를 입력하세요" />
                 <button id="searchButton">
-                    <!-- 돋보기 SVG 아이콘 -->
                     <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#FF6347">
                         <path d="M10 2C5.59 2 2 5.59 2 10s3.59 8 8 8c1.61 0 3.1-.49 4.33-1.34l5.37 5.37 1.41-1.41-5.37-5.37C17.51 13.1 18 11.61 18 10c0-4.41-3.59-8-8-8zm0 2c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6 2.69-6 6-6z"/>
                     </svg>
                 </button>
             </section>
         </div>
+
+       <section class="quiz-container">
+    <h2>알쏭달쏭 일본어</h2>
+    <div class="quiz-card">
+        <p>아래 단어의 뜻은?</p>
+        <p class="quiz-word">
+            けさ <span class="quiz-sound">🔊</span>
+        </p>
+        <button class="quiz-option">
+            <span>말기.</span>
+        </button>
+        <button class="quiz-option">
+            <span>오늘 아침.</span>
+        </button>
+        <button class="quiz-option">
+            <span>납(기호: Pb).</span>
+        </button>
+        <button class="quiz-option">
+            <span>사림.</span>
+        </button>
+
+        <div class="pagination">
+            <button class="page-btn prev" id="prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <span class="page-num">1 / 11</span>
+            <button class="page-btn" id="next">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
         
     </main>
-    <script src="script.js"></script>
+    <script src="script.js"></script>  
 </body>
 </html>
