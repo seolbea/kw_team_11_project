@@ -77,16 +77,22 @@
         // http://localhost:8000/index.html
         // CSV 파싱 함수
         function parseCSV(csv) {
-            const rows = csv.split("\n");
+            const rows = csv.split("\n").filter(row => row.trim() !== ""); // 공백 줄 필터링
+            rows.shift(); // 첫 번째 줄(헤더) 제거
+
             return rows.map(row => {
-                const columns = row.split(",");
+                // 정규식: 큰따옴표 내부의 텍스트와 일반 텍스트를 올바르게 분리
+                const columns = row.match(/"(.*?)"|([^",]+)/g) || [];
                 return {
-                    expression: columns[0],  // 단어
-                    reading: columns[1],     // 발음
-                    meaning: columns[2]      // 의미
+                    expression: columns[0]?.replace(/"/g, "").trim(), // 단어
+                    reading: columns[1]?.replace(/"/g, "").trim(),    // 발음
+                    meaning: columns[2]?.replace(/"/g, "").trim()     // 의미
                 };
             }).filter(item => item.expression && item.reading && item.meaning); // 빈 항목은 필터링
         }
+
+
+
 
         // 현재 페이지의 단어를 렌더링
         function renderPage(page) {
