@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Dictionary</title>
+</head>
+<body>
+    <H1>Result Section</H1>
+    <!-- 뒤로 가기 버튼 -->
+    <div>
+        <button type="button" id="back-btn">Back to Search Section</button>
+    </div>
+
+    <!-- 검색된 내용 표시 -->
+    <div id="result-container"></div>
+
+    <script>
+        // 뒤로 가기 버튼 클릭 이벤트
+        let backBtn = document.querySelector("#back-btn");
+        backBtn.addEventListener("click", () => {
+            window.location.href = `browse_search.html`;
+        });
+
+        // URL에서 쿼리 파라미터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+        const resultsParam = urlParams.get('results');
+
+        const resultContainer = document.getElementById('result-container');
+
+        if (resultsParam) {
+            const decodedData = decodeURIComponent(resultsParam);
+
+            if (decodedData === 'none') {
+                resultContainer.textContent = 'No matching results found.';
+            } else {
+                const results = JSON.parse(decodedData);
+                resultContainer.innerHTML = `
+                    <h2>Search Results:</h2>
+                    <ul>
+                        ${results
+                            .map(result => `
+                                <li>
+                                    <strong>Expression:</strong> ${result.expression}<br>
+                                    <strong>Reading:</strong> ${result.reading}<br>
+                                    <strong>Meaning:</strong> ${result.meaning}<br>
+                                    <strong>Tags:</strong> ${result.tags}
+                                </li>
+                            `)
+                            .join('')}
+                    </ul>
+                `;
+            }
+        } else {
+            resultContainer.textContent = 'No search query provided.';
+        }
+    </script>
+</body>
+</html>

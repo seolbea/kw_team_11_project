@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Japanese Dictionary</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <H1>Search Section</H1>
+    <!-- Mode 선택을 위한 라디오 버튼들 -->
+    <div>
+        <input type="radio" name="ModeChoose" id="read" checked>
+        <label for="read">Reading</label>
+
+        <input type="radio" name="ModeChoose" id="mean">
+        <label for="mean">Meaning</label>
+    </div>
+
+    <!-- 텍스트 입력과 검색 버튼 -->
+    <div>
+        <input type="text" id="search-input" placeholder="Enter search term">
+        <button type="button" id="search-btn">Search</button>
+    </div>
+
+    <!-- Difficulty 선택을 위한 라디오 버튼들 -->
+    <div>
+        <input type="radio" name="LevelChoose" id="all" checked>
+        <label for="all">All</label>
+
+        <input type="radio" name="LevelChoose" id="n1">
+        <label for="n1">JLPT N1</label>
+
+        <input type="radio" name="LevelChoose" id="n2">
+        <label for="n2">JLPT N2</label>
+
+        <input type="radio" name="LevelChoose" id="n3">
+        <label for="n3">JLPT N3</label>
+
+        <input type="radio" name="LevelChoose" id="n4">
+        <label for="n4">JLPT N4</label>
+
+        <input type="radio" name="LevelChoose" id="n5">
+        <label for="n5">JLPT N5</label>
+    </div>
+
+    <script>
+        let csvData = []; // CSV 데이터를 저장할 변수
+
+        function successFunction(data) {
+            var allRows = data.split(/\r?\n|\r/);
+
+            for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
+                var row = allRows[singleRow];
+                var rowCells = [];
+                var currentField = "";
+                var inQuotes = false; // 쌍따옴표 안에 있는지 상태를 추적
+
+                for (var i = 0; i < row.length; i++) {
+                    var char = row[i];
+
+                    if (char === '"' && (i === 0 || row[i - 1] !== '\\')) {
+                        // 쌍따옴표가 열리거나 닫힘
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        // 쌍따옴표 밖에서 콤마를 만나면 필드 종료
+                        rowCells.push(currentField.trim());
+                        currentField = "";
+                    } else {
+                        // 현재 필드에 문자 추가
+                        currentField += char;
+                    }
+                }
+
+                // 마지막 필드 추가
+                if (currentField.length > 0) {
+                    rowCells.push(currentField.trim());
+                }
+
+                // 예외 처리: 행이 4개의 필드를 포함하지 않으면 무시
+                if (rowCells.length !== 4) {
+                    console.warn(`Invalid row skipped (line ${singleRow + 1}):`, row);
+                    continue;
+                }
+
+                // CSV 데이터를 객체로 저장
+                if (singleRow !== 0) { // 헤더 제외
+                    csvData.push({
+                        expression: rowCells[0],
+                        reading: rowCells[1],
+                        meaning: rowCells[2],
+                        tags: rowCells[3]
+                    });
+                }
+            }
+            console.log("CSV data loaded successfully. Total valid rows:", csvData.length);
+        }
+
+
+        $.ajax({
+            url: 'https://raw.githubusercontent.com/elzup/jlpt-word-list/refs/heads/master/out/all.csv',
+            dataType: 'text'
+        }).done(successFunction);
+
+        let SearchBtn = document.querySelector("#search-btn");
+
+        SearchBtn.addEventListener("click", () => {
+            let input = document.querySelector("#search-input");
+            let text = input.value.trim();
+            if (!text.length) return;
+
+            // 선택된 모드
+            var selectedMode = document.querySelector('input[name="ModeChoose"]:checked');
+            if (!selectedMode) return;
+            console.log(selectedMode.id);
+
+            // 선택된 난이도
+            var selectedLevel = document.querySelector('input[name="LevelChoose"]:checked');
+            if (!selectedLevel) return;
+            console.log(selectedLevel.id);
+
+            // 로마자 -> 히라가나 변환 테이블 (za, ba, gu, di, pi, du, pu, ze, pe, go, do, bo, po)
+            const romajiToHiragana = {
+                a: "あ",    ka: "か",   sa: "さ",   ta: "た",   na: "な",   ha: "は",   ma: "ま",   ya: "や",   ra: "ら",   wa: "わ",   n: "ん",
+                i: "い",    ki: "き",   shi: "し",  chi: "ち",  ni: "に",   hi: "ひ",   mi: "み",               ri: "り",
+                u: "う",    ku: "く",   su: "す",   tsu: "つ",  nu: "ね",   fu: "ふ",   mu: "む",   yu: "ゆ",   ru: "る",
+                e: "え",    ke: "け",   se: "せ",   te: "て",   ne: "ね",   he: "へ",   me: "め",               re: "れ",
+                o: "お",    ko: "こ",   so: "そ",   to: "と",   no: "の",   ho: "ほ",   mo: "も",   yo: "よ",   ro: "ろ",
+                            ga: "が",   za: "ざ",   da: "だ",   ba: "ば",   pa: "ぱ",
+                            gi: "ぎ",   ji: "じ",   di: "ヂ",   bi: "び",   pi: "ぴ",
+                            gu: "ぐ",   u: "ず",    du: "づ",   bu: "ぶ",   pu: "ぷ",
+                            ge: "げ",   ze: "ぜ",   de: "で",   be: "べ",   pe: "ぺ",
+                            go: "ご",   zo: "ぞ",   do: "ど",   bo: "ぼ",   po: "ぽ",
+                shu: "しゅ", ryo: "りょ", byo: "びょ", hya:"ひゃ", jyu: "じゅ", tto: "っと",
+                ppa: "っぱ", ttsu: "っつ", kku: "っく", tto: "っと", ssu: "っす", tte: "って"
+            };
+
+            // 로마자 -> 카타가나 변환 테이블 (hi, u, nu, yu, ke, he, yo, /pa, /di, bi, gu, /du, bu, ge, ze, go, zo, po)
+            const romajiToKatagana = {
+                a: "ア",    ka: "カ",   sa: "サ",   ta: "タ",   na: "ナ",   ha: "ハ",   ma: "マ",   ya: "ヤ",   ra: "ラ",   wa: "ワ",   n: "ン",
+                i: "イ",    ki: "キ",   shi: "シ",  chi: "チ",  ni: "ニ",   hi: "ヒ",   mi: "ミ",               ri: "リ",
+                u: "ウ",    ku: "ク",   su: "ス",   tsu: "ツ",  nu: "ヌ",   fu: "フ",   mu: "ム",   yu: "ユ",   ru: "ル",
+                e: "エ",    ke: "ケ",   se: "セ",   te: "テ",   ne: "ネ",   he: "ヘ",   me: "メ",               re: "レ",
+                o: "オ",    ko: "コ",   so: "ソ",   to: "ト",   no: "ノ",   ho: "ホ",   mo: "モ",   yo: "ヨ",   ro: "ロ",
+                            ga: "ガ",   za: "ザ",   da: "ダ",   ba: "バ",   pa: "パ",
+                            gi: "ギ",   ji: "ジ",   di: "ヂ",   bi: "ビ",   pi: "ピ",
+                            gu: "グ",   zu: "ズ",   du: "ヅ",   bu: "ブ",   pu: "プ",
+                            ge: "ゲ",   ze: "ゼ",   de: "デ",   be: "ベ",   pe: "ペ",
+                            go: "ゴ",   zo: "ゾ",   do: "ド",   bo: "ボ",   po: "ポ",
+                fa: "ファ", fo: "フォ", 
+                cchi: "ッチ", sho: "ショ", nyu: "ニュ"
+            };
+
+            // 로마자 -> 히라가나 및 카타카나 변환 함수
+            /*
+            function convertToKana(romaji) {
+                let hiragana = "";
+                let katakana = "";
+                for (let i = 0; i < romaji.length; i++) {
+                    for (let len = 3; len > 0; len--) { // 최대 길이 3글자까지 검사
+                        const substr = romaji.slice(i, i + len);
+                        if (romajiToHiragana[substr]) {
+                            hiragana += romajiToHiragana[substr];
+                            katakana += String.fromCharCode(romajiToHiragana[substr].charCodeAt(0) + 96); // 히라가나 -> 카타카나
+                            i += len - 1; // 매칭된 길이만큼 점프
+                            break;
+                        }
+                
+                    }
+                    return { hiragana, katakana };
+                }
+            }
+                */
+
+            function convertToKana(romaji) {
+                let hiragana = "";
+                let katakana = "";
+                let i = 0;
+
+                while (i < romaji.length) {
+                    let matched = false;
+
+                    // 최대 3글자 길이부터 1글자까지 검사
+                    for (let len = 3; len > 0; len--) {
+                        const substr = romaji.slice(i, i + len);
+                        if (romajiToHiragana[substr]) {
+                            hiragana += romajiToHiragana[substr];
+                            katakana += String.fromCharCode(romajiToHiragana[substr].charCodeAt(0) + 96); // 히라가나 -> 카타카나
+                            i += len; // 매칭된 길이만큼 점프
+                            matched = true;
+                            break;
+                        }
+                    }
+
+                    // 매칭 실패 처리
+                    if (!matched) {
+                        // 특수 문자나 매칭되지 않는 문자를 스킵
+                        hiragana += romaji[i];
+                        katakana += romaji[i];
+                        i++;
+                    }
+                }
+
+                return { hiragana, katakana };
+            }
+
+
+
+
+            // 선택된 모드에 따라 검색 조건 설정
+            let searchFilter = (row) => {
+                if (!text || typeof text !== "string") return false;
+
+                if (selectedMode.id === "read") {
+                    const { hiragana, katakana } = convertToKana(text);
+                    console.log(`Hiragana: ${hiragana}, Katakana: ${katakana}`);
+
+                    return (
+                        typeof row.reading === "string" &&
+                        (row.reading === hiragana || row.reading === katakana)
+                    );
+                } else if (selectedMode.id === "mean") {
+                    console.log(text);
+                    return row.meaning.includes(text);
+                }
+                return false;
+            };
+
+            // 난이도에 따라 태그 필터링 설정
+            let levelFilter = (row) => true; // 기본적으로 모든 데이터 포함
+            switch (selectedLevel.id) {
+                case "n1": levelFilter = (row) => row.tags.includes("JLPT_1"); break;
+                case "n2": levelFilter = (row) => row.tags.includes("JLPT_2"); break;
+                case "n3": levelFilter = (row) => row.tags.includes("JLPT_3"); break;
+                case "n4": levelFilter = (row) => row.tags.includes("JLPT_4"); break;
+                case "n5": levelFilter = (row) => row.tags.includes("JLPT_5"); break;
+                case "all": levelFilter = (row) => true; break;
+            }
+
+            // 필터링된 데이터 검색
+            let foundData = csvData.filter(row => levelFilter(row) && searchFilter(row));
+            ///*
+            if (foundData.length > 0) {
+                // 검색된 데이터를 JSON 형식으로 browse_result.html로 전달
+                const encodedData = encodeURIComponent(JSON.stringify(foundData));
+                window.location.href = `browse_result.html?results=${encodedData}`;
+            } else {
+                // 검색 결과 없음을 전달
+                window.location.href = `browse_result.html?results=${encodeURIComponent('none')}`;
+            }
+            //*/
+            input.value = ""; // 입력창 초기화
+            });
+    </script>
+</body>
+</html>
