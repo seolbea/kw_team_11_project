@@ -1,0 +1,181 @@
+/* 로그인/회원가입 버튼 디자인 */
+.login-button{
+    margin-left: auto;
+    background-color: transparent;
+    color:white;
+    font-size: 16px;
+    border:none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    cursor:pointer;
+    transition: background-color 0.3 ease;
+    white-space: nowrap;
+}
+
+.login-button:hover{
+    background-color: #FF6347;
+}
+
+/* 메인 상단바 디자인 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #FFA07A; /* 상단바 배경색 */
+    color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    position: relative;
+    z-index: 100;
+    white-space: nowrap;
+    max-height: 45px;
+}
+
+/* 서브 상단바(N1~N5) 스타일 */
+.sub-navbar {
+    position: absolute; 
+    top: 100%; 
+    left: 0; 
+    display: none; 
+    background-color: #FFB899; 
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    z-index: 1000; 
+    flex-direction: row;
+    gap: 10px;
+    border-radius: 5px;
+    min-width: 200px; 
+}
+
+/* 서브바 활성화 */
+.sub-navbar.show {
+    display: flex; 
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* 서브바 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* N1~N5 버튼 디자인 */
+.sub-button {
+    text-align: left;
+    font-size: 16px;
+    color: white;
+    background-color: #FFB899;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sub-button:hover{
+    background-color: #FFA07A;
+    transform: scale(1.05);
+}
+
+/* 드롭다운 버튼(등급별 단어 시험 버튼) */
+.dropdown-button {
+    background-color: #FFA07A; /* 버튼 색상 */
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 드롭다운 버튼 호버 */
+.dropdown-button:hover {
+    background-color: #FF6347;
+}
+
+/* 단순 버튼 */
+.simple-button {
+    background-color: #FFA07A; /* 버튼 색상 */
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* 단순 버튼 호버 */
+.simple-button:hover {
+    background-color: #FF6347;
+}
+
+/* 드롭다운 컨테이너 */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+#popupContainer {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+}
+
+#popupContainer h3{
+    color:#FF6347;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+}
+
+.difficulty-button {
+    margin: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: white;
+    border: 2px solid #FFB899;
+    cursor: pointer;
+    border-radius: 5px;
+}
+.difficulty-button:hover {
+    background-color: #FFB899;
+    color: white;
+}
+#closePopup {
+    margin-top: 10px;
+    padding: 5px 10px;
+    font-size: 14px;
+    color: white;
+    background-color: #FFA07A;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+#closePopup:hover {
+    background-color: #FF6347;
+}

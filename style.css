@@ -13,116 +13,6 @@ header {
     font-size: 24px;
 }
 
-/* 로그인/회원가입 버튼 디자인 */
-.login-button{
-    margin-left: auto;
-    background-color: transparent;
-    color:white;
-    font-size: 16px;
-    border:none;
-    border-radius: 3px;
-    padding: 10px 20px;
-    cursor:pointer;
-    transition: background-color 0.3 ease;
-    white-space: nowrap;
-}
-
-.login-button:hover{
-    background-color: #FF6347;
-}
-
-/* 메인 상단바 디자인 */
-.navbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #FFA07A; /* 상단바 배경색 */
-    color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
-    position: relative;
-    z-index: 100;
-    white-space: nowrap;
-}
-
-/* 서브 상단바(N1~N5) 스타일 */
-.sub-navbar {
-    height: 0px;
-    overflow: hidden;
-    background-color: #FFB899; /* 옅은 색 배경 */
-    padding: 0px 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* 살짝 그림자 추가 */
-    transition: height 0.2s ease, padding 0.2s ease;
-    position: relative;
-    z-index: 100;
-    display: flex;
-    flex-direction: row;
-    gap: 2px;
-}
-
-.sub-navbar.show{
-    height: 40px;
-    padding: 0px 10px;
-}
-
-/* N1~N5 버튼 디자인 */
-.sub-button {
-    text-align: left;
-    font-size: 16px;
-    color: white;
-    background-color: #FFB899;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-.sub-button:hover{
-    background-color: #FFA07A;
-    transform: scale(1.05);
-}
-
-/* 드롭다운 버튼(등급별 단어 시험 버튼) */
-.dropdown-button {
-    background-color: #FFA07A; /* 버튼 색상 */
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 3px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-/* 드롭다운 버튼 호버 */
-.dropdown-button:hover {
-    background-color: #FF6347;
-}
-
-/* 단순 버튼 */
-.simple-button {
-    background-color: #FFA07A; /* 버튼 색상 */
-    color: white;
-    font-size: 18px;
-    border: none;
-    border-radius: 3px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-/* 단순 버튼 호버 */
-.simple-button:hover {
-    background-color: #FF6347;
-}
-
-/* 드롭다운 컨테이너 */
-.dropdown {
-    position: relative;
-    display: inline-flex;
-}
-
 /* 검색창 컨테이너 */
 .search-container {
     display: flex;
@@ -133,7 +23,10 @@ header {
 
 /* 검색창 래퍼 (검색창+버튼) */
 .search-wrapper {
+    display: block;
+    align-items: center;
     position: relative;
+    right: 20px; /*검색창 가운데 정렬*/
     width: 400px;
     margin: 0 auto;
     transition: width 0.3s ease;
@@ -266,7 +159,7 @@ header {
 }
 
 .page-btn:hover {
-    background-color: #FF6347;
+    /*background-color: #FF6347;*/
     transform: scale(1.1);
 }
 
