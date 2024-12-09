@@ -10,7 +10,15 @@
 <body>
     <header>
         <!-- 상단바 -->
-        <div id="navbar"></div>
+        <div id="navbar">
+            <span id="login-section">
+                <a href="login.html">Login / Sign Up</a>
+            </span>
+            <span id="user-section" style="display: none;">
+                <span id="welcome-message"></span>
+                <button id="logout-button">Logout</button>
+            </span>
+        </div>
         <h1>일본어 사전</h1>
     </header>
     <main>
@@ -60,7 +68,6 @@
                 </svg>
             </button>
         </div>
-        
     </main>
     <script src="script.js"></script>
     <script src="navbar/navbar.js"></script>  

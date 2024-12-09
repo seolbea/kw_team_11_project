@@ -179,3 +179,54 @@
 #closePopup:hover {
     background-color: #FF6347;
 }
+
+#user-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#welcome-message {
+    font-size: 16px;
+    color: white;
+}
+
+#logoutButton {
+    font-size: 16px; /* Home 버튼과 동일한 글자 크기 */
+    font-weight: bold; /* 텍스트 두께 */
+    background-color: #FFA07A; /* 버튼 배경색 */
+    border: none; /* 테두리 제거 */
+    border-radius: 10px; /* 둥근 모서리 */
+    padding: 10px 20px; /* 버튼 패딩 */
+    cursor: pointer; /* 마우스 포인터 */
+    color: white; /* 텍스트 색상 */
+    transition: background-color 0.3s ease, color 0.3s ease; /* 애니메이션 효과 */
+}
+
+#logoutButton:hover {
+    background-color: #FF6347; /* 호버 시 배경색 */
+    color: white; /* 호버 시 텍스트 색상 */
+}
+
+.navbar-center {
+    position: absolute; /* 정중앙 배치 */
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.home-button {
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #FFA07A;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    cursor: pointer;
+    color: white; /* 텍스트 색상을 하얀색으로 설정 */
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.home-button:hover {
+    background-color: #FF6347;
+    color: white;
+}
