@@ -11,6 +11,31 @@ fetch('navbar/navbar.html')
 
 // 네비게이션 바 이벤트 초기화
 function initNavbar() {
+    /* 로그인 상태 확인 */
+    const loggedInUser = localStorage.getItem('loggedInUser');
+    const loginSection = document.getElementById('login-section');
+    const userSection = document.getElementById('user-section');
+    const welcomeMessage = document.getElementById('welcome-message');
+    const logoutButton = document.getElementById('logoutButton');
+
+    if (loggedInUser) {
+        // 로그인 상태일 때
+        loginSection.style.display = 'none'; // Login / Sign Up 숨김
+        userSection.style.display = 'flex'; // 사용자 이름 + 로그아웃 버튼 표시
+        welcomeMessage.textContent = `${loggedInUser}님 환영합니다`;
+
+        // 로그아웃 버튼 이벤트 추가
+        logoutButton.addEventListener('click', () => {
+            localStorage.removeItem('loggedInUser'); // 로그인 정보 삭제
+            alert('로그아웃되었습니다.');
+            location.reload(); // 페이지 새로고침
+        });
+    } else {
+        // 로그아웃 상태일 때
+        loginSection.style.display = 'flex'; // Login / Sign Up 표시
+        userSection.style.display = 'none'; // 사용자 이름 + 로그아웃 버튼 숨김
+    }
+
     /* 상단바 */
     const NButton = document.getElementById("NButton");
     const subNavbar = document.getElementById("subNavbar");
@@ -83,5 +108,13 @@ function initNavbar() {
     if (closePopup && popupOverlay) {
         closePopup.addEventListener("click", closePopupHandler);
         popupOverlay.addEventListener("click", closePopupHandler);
+    }
+
+    /* 홈 버튼 */
+    const homeButton = document.getElementById("homeButton");
+    if (homeButton) {
+        homeButton.addEventListener("click", () => {
+            window.location.href = "index.html"; // index.html로 이동
+        });
     }
 }

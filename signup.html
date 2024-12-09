@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link rel="stylesheet" href="Login.css">
+    <link rel="stylesheet" href="navbar/navbar.css">
+    <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+    <!-- 상단바 -->
+    <header>
+        <div id="navbar"></div>
+    </header>
+    <div class="signup-container">
+        <form class="signup-form" id="signupForm">
+            <h2>Sign Up</h2>
+            <input type="text" id="name" placeholder="Name" required>
+            <input type="text" id="signupId" placeholder="ID" required>
+            <input type="password" id="signupPassword" placeholder="Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button type="submit" class="signup-submit">Sign Up</button>
+            <a href="login.html" class="login-link">Already have an account? Login here</a>
+        </form>
+    </div>
+    <script src="signup.js"></script>
+    <script src="navbar/navbar.js"></script>
+</body>
+</html>
