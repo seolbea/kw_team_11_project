@@ -143,6 +143,13 @@ header {
     margin-top: 20px;
 }
 
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+}
+
 /* Pagination Buttons */
 .page-btn {
     width: 40px;

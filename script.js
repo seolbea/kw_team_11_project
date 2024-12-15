@@ -1,23 +1,3 @@
-/* 로그인 버튼 */
-const loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", () => {
-    window.location.href = "login.html"; // 로그인 페이지로 이동
-});
-
-/* 상단바 */
-const NButton = document.getElementById("NButton");
-const subNavbar = document.getElementById("subNavbar");
-
-NButton.addEventListener("click", () => {
-    subNavbar.classList.toggle("show");
-});
-
-/* 나만의 단어장 */
-const vocabButton = document.getElementById("vocabButton");
-vocabButton.addEventListener("click", () => {
-    window.location.href = "vocablist.html";
-});
-
 /* 검색창 */
 const searchButton = document.getElementById("searchButton");
 const searchBox = document.getElementById("searchBox");
@@ -31,86 +11,74 @@ searchButton.addEventListener("click", () => {
     }
 });
 
-/* 퀴즈 버튼 이벤트 */
-const quizOptions = document.querySelectorAll('.quiz-option');
+// 퀴즈 데이터 (예제 데이터)
+const quizData = [
+    { word: "けさ", options: ["말기.", "오늘 아침.", "납(기호: Pb).", "사림."], answer: 1 },
+    { word: "はる", options: ["봄.", "여름.", "가을.", "겨울."], answer: 0 },
+    { word: "さくら", options: ["벚꽃.", "국화.", "난초.", "소나무."], answer: 0 },
+    { word: "きょう", options: ["오늘.", "어제.", "내일.", "지난주."], answer: 0 },
+    { word: "明るい", options: ["밝다.", "어둡다.", "붉다.", "늦다."], answer: 0 },
+];
 
-quizOptions.forEach(option => {
-    option.addEventListener('click', function () {
-        alert(`선택한 문장: ${this.textContent}`);
-    });
-});
-
-// 페이지네이션 버튼들
-const prevButton = document.getElementById('prev');
-const nextButton = document.getElementById('next');
-const pageNumber = document.querySelector('.page-num');
-
+// 현재 페이지 및 총 페이지 수
 let currentPage = 1;
-const totalPages = 11;
-
-// 페이지네이션 버튼 클릭 시 페이지 전환
-prevButton.addEventListener('click', () => {
-    if (currentPage > 1) {
-        currentPage--;
-        updatePageNumber();
-    }
-});
-
-nextButton.addEventListener('click', () => {
-    if (currentPage < totalPages) {
-        currentPage++;
-        updatePageNumber();
-    }
-});
+const totalPages = quizData.length;
 
 // 페이지 번호 업데이트 함수
 function updatePageNumber() {
+    const pageNumber = document.querySelector('.page-num');
     pageNumber.textContent = `${currentPage} / ${totalPages}`;
 }
 
+// 퀴즈 데이터를 로드하고 DOM 업데이트
+function loadQuiz(page) {
+    const quizWord = document.querySelector('.quiz-word');
+    const quizOptionsContainer = document.getElementById('quiz-options');
+
+    // 현재 페이지 퀴즈 데이터
+    const quiz = quizData[page - 1];
+    quizWord.textContent = quiz.word;
+
+    // 기존 옵션 초기화
+    quizOptionsContainer.innerHTML = '';
+    console.log(quiz);
+    console.log(quizOptionsContainer);
+    // 새로운 옵션 버튼 생성
+    quiz.options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.className = 'quiz-option';
+        button.textContent = option;
+
+        // 클릭 이벤트 추가
+        button.addEventListener('click', () => {
+            const isCorrect = index === quiz.answer; // 정답 확인
+            alert(isCorrect ? '정답입니다!' : '틀렸습니다!');
+        });
+
+        // 옵션 버튼 추가
+        quizOptionsContainer.appendChild(button);
+    });
+}
+
+// 이전 페이지 버튼 이벤트
+document.getElementById('prev').addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        updatePageNumber();
+        loadQuiz(currentPage); // 퀴즈 업데이트
+    }
+});
+
+// 다음 페이지 버튼 이벤트
+document.getElementById('next').addEventListener('click', () => {
+    if (currentPage < totalPages) {
+        currentPage++;
+        updatePageNumber();
+        loadQuiz(currentPage); // 퀴즈 업데이트
+    }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
-    // N1 ~ N5 버튼에 클릭 이벤트 추가
-    document.querySelectorAll(".sub-button").forEach((button, index) => {
-        button.addEventListener("click", () => {
-            const levels = ["N1", "N2", "N3", "N4", "N5"];
-            // JLPT_N_1to5 폴더 내 words.html로 이동, level 파라미터 전달
-            location.href = `JLPT_N_1to5/words.html?level=${levels[index].toLowerCase()}`;
-        });
-    });
+    updatePageNumber();
+    loadQuiz(currentPage); // 첫 번째 퀴즈 로드
 });
-// 등급별 단어 시험 버튼과 서브 네비게이션 바
-const examButton = document.getElementById("examButton");
-const popupContainer = document.getElementById("popupContainer");
-const popupOverlay = document.getElementById("popupOverlay");
-const difficultyButtons = document.getElementById("difficultyButtons");
-const closePopup = document.getElementById("closePopup");
-// 난이도 목록
-const difficulties = ["N1", "N2", "N3", "N4", "N5"];
-
-// 버튼 클릭 시 팝업 표시
-examButton.addEventListener("click", () => {
-    popupContainer.style.display = "block";
-    popupOverlay.style.display = "block";
-
-    // 난이도 버튼 동적 생성
-    difficultyButtons.innerHTML = ""; // 기존 버튼 초기화
-    difficulties.forEach(difficulty => {
-        const button = document.createElement("button");
-        button.className = "difficulty-button";
-        button.textContent = difficulty;
-        button.addEventListener("click", () => {
-            alert(`${difficulty} 시험을 시작합니다!`); // 실제 행동 정의 가능
-            closePopupHandler();
-        });
-        difficultyButtons.appendChild(button);
-    });
-});
-
-// 팝업 닫기
-const closePopupHandler = () => {
-    popupContainer.style.display = "none";
-    popupOverlay.style.display = "none";
-};
-
-closePopup.addEventListener("click", closePopupHandler);
-popupOverlay.addEventListener("click", closePopupHandler);

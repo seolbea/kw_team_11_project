@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JPDictionary</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="navbar/navbar.css">
+    <link rel="stylesheet" href="/kw_team_11_project/style.css">
+    <link rel="stylesheet" href="/kw_team_11_project/navbar/navbar.css">
 </head>
 <body>
     <header>
@@ -29,24 +29,11 @@
 
        <section class="quiz-container">
     <h2>알쏭달쏭 일본어</h2>
-    <div class="quiz-card">
-        <p>아래 단어의 뜻은?</p>
-        <p class="quiz-word">
-            けさ <span class="quiz-sound">🔊</span>
-        </p>
-        <button class="quiz-option">
-            <span>말기.</span>
-        </button>
-        <button class="quiz-option">
-            <span>오늘 아침.</span>
-        </button>
-        <button class="quiz-option">
-            <span>납(기호: Pb).</span>
-        </button>
-        <button class="quiz-option">
-            <span>사림.</span>
-        </button>
-
+        <div class="quiz-card">
+            <p>아래 단어의 뜻은?</p>
+            <p class="quiz-word"></p> <!-- 단어 텍스트는 JS에서 추가 -->
+            <div id="quiz-options"></div> <!-- 옵션 버튼이 동적으로 추가될 컨테이너 -->
+        </div>
         <div class="pagination">
             <button class="page-btn prev" id="prev">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#FF6347" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -62,7 +49,7 @@
         </div>
         
     </main>
-    <script src="script.js"></script>
-    <script src="navbar/navbar.js"></script>  
+    <script src="/kw_team_11_project/script.js"></script>
+    <script src="/kw_team_11_project/navbar/navbar.js"></script>  
 </body>
 </html>

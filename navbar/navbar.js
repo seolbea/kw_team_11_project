@@ -1,5 +1,5 @@
 // 네비게이션 바 로드
-fetch('navbar/navbar.html')
+fetch('/kw_team_11_project/navbar/navbar.html')
     .then(response => response.text())
     .then(html => {
         document.getElementById('navbar').innerHTML = html;
@@ -21,11 +21,20 @@ function initNavbar() {
         });
     }
 
+    // 홈 버튼
+    const homeButton = document.getElementById("homeButton");
+    if (homeButton) {
+        homeButton.addEventListener("click", () => {
+            window.location.href = "/kw_team_11_project/index.html"; // Home(메인) 페이지로 이동
+        });
+    }
+
+
     /* 로그인 버튼 */
     const loginButton = document.getElementById("loginButton");
     if (loginButton) {
         loginButton.addEventListener("click", () => {
-            window.location.href = "login.html"; // 로그인 페이지로 이동
+            window.location.href = "/kw_team_11_project/login.html"; // 로그인 페이지로 이동
         });
     }
 
@@ -33,7 +42,7 @@ function initNavbar() {
     const vocabButton = document.getElementById("vocabButton");
     if (vocabButton) {
         vocabButton.addEventListener("click", () => {
-            window.location.href = "vocablist.html";
+            window.location.href = "/kw_team_11_project/vocablist.html";
         });
     }
 
@@ -42,7 +51,7 @@ function initNavbar() {
         button.addEventListener("click", () => {
             const levels = ["N1", "N2", "N3", "N4", "N5"];
             // JLPT_N_1to5 폴더 내 words.html로 이동, level 파라미터 전달
-            location.href = `JLPT_N_1to5/words.html?level=${levels[index].toLowerCase()}`;
+            location.href = '/kw_team_11_project/JLPT_N_1to5/words.html?level=' + levels[index].toLowerCase();
         });
     });
 

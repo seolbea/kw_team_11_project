@@ -117,6 +117,28 @@
     background-color: #FF6347;
 }
 
+/* 홈 버튼 */
+.home-button {
+    background-color: #FFA07A; /* 버튼 색상 */
+    color: white;
+    font-size: 18px;
+    border: none;
+    border-radius: 3px;
+    padding: 10px 20px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 12px;
+}
+
+/* 홈 버튼 호버 */
+.home-button:hover {
+    background-color: #FF6347;
+}
+
+
+
 /* 드롭다운 컨테이너 */
 .dropdown {
     position: relative;
