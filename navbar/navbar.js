@@ -73,32 +73,35 @@ function initNavbar() {
     });
 
     // 등급별 단어 시험 버튼과 팝업 관련
-    const examButton = document.getElementById("examButton");
-    const popupContainer = document.getElementById("popupContainer");
-    const popupOverlay = document.getElementById("popupOverlay");
-    const difficultyButtons = document.getElementById("difficultyButtons");
-    const closePopup = document.getElementById("closePopup");
-    const difficulties = ["N1", "N2", "N3", "N4", "N5"];
+const examButton = document.getElementById("examButton");
+const popupContainer = document.getElementById("popupContainer");
+const popupOverlay = document.getElementById("popupOverlay");
+const difficultyButtons = document.getElementById("difficultyButtons");
+const closePopup = document.getElementById("closePopup");
+const difficulties = ["N1", "N2", "N3", "N4", "N5"];
 
-    if (examButton && popupContainer && popupOverlay) {
-        examButton.addEventListener("click", () => {
-            popupContainer.style.display = "block";
-            popupOverlay.style.display = "block";
+if (examButton && popupContainer && popupOverlay) {
+    examButton.addEventListener("click", () => {
+        popupContainer.style.display = "block";
+        popupOverlay.style.display = "block";
 
-            // 난이도 버튼 동적 생성
-            difficultyButtons.innerHTML = ""; // 기존 버튼 초기화
-            difficulties.forEach(difficulty => {
-                const button = document.createElement("button");
-                button.className = "difficulty-button";
-                button.textContent = difficulty;
-                button.addEventListener("click", () => {
-                    alert(`${difficulty} 시험을 시작합니다!`);
-                    closePopupHandler();
-                });
-                difficultyButtons.appendChild(button);
+        // 난이도 버튼 동적 생성
+        difficultyButtons.innerHTML = ""; // 기존 버튼 초기화
+        difficulties.forEach(difficulty => {
+            const button = document.createElement("button");
+            button.className = "difficulty-button";
+            button.textContent = difficulty;
+
+            // 버튼 클릭 시 해당 난이도의 시험 페이지로 이동
+            button.addEventListener("click", () => {
+                // test.html로 난이도 파라미터 전달
+                window.location.href = `/JLPT_N_1to5/test.html?level=${difficulty.toLowerCase()}`;
             });
+
+            difficultyButtons.appendChild(button);
         });
-    }
+    });
+}
 
     // 팝업 닫기 이벤트
     const closePopupHandler = () => {
