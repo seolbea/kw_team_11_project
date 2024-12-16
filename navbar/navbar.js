@@ -29,12 +29,29 @@ function initNavbar() {
         });
     }
 
-
     /* 로그인 버튼 */
     const loginButton = document.getElementById("loginButton");
-    if (loginButton) {
+    const loggedInUser = localStorage.getItem("loggedInUser");
+
+    if (loggedInUser) {
+        // 로그인 상태일 때
+        loginButton.textContent = `${loggedInUser}님 환영합니다`; // 버튼 텍스트 변경
+        loginButton.style.pointerEvents = "none"; // 클릭 비활성화
+        loginButton.style.cursor = "default"; // 포인터 모양 변경
+        logoutButton.classList.remove("hidden");
+
+        logoutButton.addEventListener("click", () => {
+            // 로그아웃 처리
+            localStorage.removeItem("loggedInUser");
+            alert("로그아웃되었습니다.");
+            window.location.href = "/index.html"; // 페이지 새로고침
+        });
+    } else {
+        // 비로그인 상태
+        loginButton.classList.remove("hidden");
+        logoutButton.classList.add("hidden");
         loginButton.addEventListener("click", () => {
-            window.location.href = "/login.html"; // 로그인 페이지로 이동
+            window.location.href = "/login.html";
         });
     }
 

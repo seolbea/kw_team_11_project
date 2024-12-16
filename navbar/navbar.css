@@ -199,3 +199,21 @@
 #closePopup:hover {
     background-color: #FF6347;
 }
+
+.logout-button {
+    background-color: transparent;
+    color: white;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: color 0.3s ease;
+}
+
+.logout-button:hover {
+    color: #FF4500; /* 호버 시 색상 변경 */
+}
+
+.hidden {
+    display: none; /* 기본적으로 숨김 처리 */
+}
