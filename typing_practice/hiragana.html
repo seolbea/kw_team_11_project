@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>히라가나 타자 연습</title>
+    <style>
+        /* 기본 스타일 */
+        body {
+            background-color: rgb(252, 231, 222);
+            font-family: Arial, sans-serif;
+            margin:0;
+            padding:0;
+            text-align:center;
+        }
+
+        header {
+            background-color: rgb(252, 231, 222);
+            color: #FF6347;
+            padding: 20px;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            color: #ff6347;
+        }
+
+        /* 타자 연습 컨테이너 */
+        .typing-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 70vh;
+        }
+
+        .display {
+            font-size: 5em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        #typingInput {
+            font-size: 1.5em;
+            padding: 10px;
+            background-color: white;
+            border: 2px solid #ff6347;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        #typingInput:focus {
+            border-color: #ff6347;
+        }
+
+        .stats {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+        footer {
+            margin-top: 20px;
+        }
+
+        /* 게임 종료 시 점수 팝업 스타일 */
+        #endGamePopup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.7); /* 어두운 배경 */
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            backdrop-filter: blur(10px); /* 배경 블러 효과 */
+            -webkit-backdrop-filter: blur(10px); /* Safari 지원 */
+        }
+
+        /* 버튼 스타일 */
+        #endGamePopup button {
+            background-color: #FF5733;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        #endGamePopup button:hover {
+            background-color: #e04f31;
+        }
+    </style>
+    <link rel="stylesheet" href="../navbar/navbar.css">
+</head>
+<body>
+    <!-- 페이지 헤더 -->
+    <header>
+        <!-- 상단바 -->
+        <div id="navbar"></div>
+        <h1>히라가나 타자 연습</h1>
+    </header>
+
+    <!-- 타자 연습 컨테이너 -->
+    <main class="typing-container">
+        <div class="display">
+            <p id="hiraganaChar">あ</p> <!-- 표시되는 히라가나 -->
+        </div>
+        <input type="text" id="typingInput" placeholder="입력하세요" autofocus />
+        <div class="stats">
+            <p>점수: <span id="score">0</span></p>
+            <p>남은 시간: <span id="timer">60</span>초</p>
+        </div>
+    </main>
+
+    <!-- 게임 종료 팝업 -->
+    <div id="endGamePopup">
+        <p id="finalScore"></p>
+        <button id="restartButton">다시 시작</button>
+    </div>
+
+    <!-- JavaScript 코드 -->
+    <script>
+        // 히라가나 문자 목록과 로마자 매핑
+        const hiraganaMap = {
+            "a": "あ", "i": "い", "u": "う", "e": "え", "o": "お",
+            "ka": "か", "ki": "き", "ku": "く", "ke": "け", "ko": "こ",
+            "sa": "さ", "shi": "し", "su": "す", "se": "せ", "so": "そ",
+            "ta": "た", "chi": "ち", "tsu": "つ", "te": "て", "to": "と",
+            "na": "な", "ni": "に", "nu": "ぬ", "ne": "ね", "no": "の",
+            "ha": "は", "hi": "ひ", "fu": "ふ", "he": "へ", "ho": "ほ",
+            "ma": "ま", "mi": "み", "mu": "む", "me": "め", "mo": "も",
+            "ya": "や", "yu": "ゆ", "yo": "よ", "ra": "ら", "ri": "り",
+            "ru": "る", "re": "れ", "ro": "ろ", "wa": "わ", "wo": "を", "n": "ん"
+        };
+
+        let currentChar = "";       // 현재 입력해야 할 히라가나
+        let score = 0;              // 점수
+        let timeLeft = 60;          // 남은 시간 (초)
+        let timer;                  // 타이머 변수
+
+        // DOM 요소 가져오기
+        const hiraganaCharElement = document.getElementById("hiraganaChar");
+        const typingInput = document.getElementById("typingInput");
+        const scoreElement = document.getElementById("score");
+        const timerElement = document.getElementById("timer");
+        const restartButton = document.getElementById("restartButton");
+        const endGamePopup = document.getElementById("endGamePopup");
+        const finalScoreElement = document.getElementById("finalScore");
+
+        // 게임 시작 함수
+        function startGame() {
+            score = 0;
+            timeLeft = 60;
+            updateScore();
+            updateTimer();
+            nextCharacter();
+            typingInput.value = "";
+            typingInput.focus();
+            endGamePopup.style.display = "none"; // 게임 종료 팝업 숨기기
+
+            // 타이머 시작
+            if (timer) clearInterval(timer);
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 1000);
+        }
+
+        // 다음 히라가나 문자 표시
+        function nextCharacter() {
+            const keys = Object.keys(hiraganaMap);
+            const randomKey = keys[Math.floor(Math.random() * keys.length)];
+            currentChar = hiraganaMap[randomKey];
+            hiraganaCharElement.textContent = currentChar;
+        }
+
+        // 점수 업데이트
+        function updateScore() {
+            scoreElement.textContent = score;
+        }
+
+        // 타이머 업데이트
+        function updateTimer() {
+            timerElement.textContent = timeLeft;
+        }
+
+        // 게임 종료
+        function endGame() {
+            finalScoreElement.textContent = `게임 종료! 당신의 점수는 ${score}점입니다.`;
+            endGamePopup.style.display = "block"; // 게임 종료 팝업 표시
+            typingInput.disabled = true; // 입력창 비활성화
+        }
+
+        // 키보드 입력 이벤트 (Enter 키로 확인)
+        typingInput.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") { // Enter 키가 눌렸을 때
+                const inputText = typingInput.value.trim().toLowerCase();
+                const correctAnswer = Object.keys(hiraganaMap).find(key => hiraganaMap[key] === currentChar);
+
+                if (inputText === correctAnswer) { // 입력값과 현재 문자 비교
+                    score++; // 점수 증가
+                    updateScore(); // 점수 업데이트
+                    nextCharacter(); // 다음 문자 불러오기
+                }
+
+                typingInput.value = ""; // 입력창 초기화
+                typingInput.focus();    // 입력창 포커스 재설정
+            }
+        });
+
+        // 다시 시작 버튼 이벤트
+        restartButton.addEventListener("click", () => {
+            typingInput.disabled = false;
+            startGame();
+        });
+
+        // 페이지 로드 시 게임 시작
+        window.onload = startGame;
+    </script>
+    <script src="../navbar/navbar.js"></script>
+</body>
+</html>
