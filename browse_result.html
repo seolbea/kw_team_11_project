@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JPDictionary</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/navbar/navbar.css">
+    <style>
+        /* 텍스트 왼쪽 정렬 */
+        #result-container1, #result-container2 {
+            text-align: left;
+            margin: 20px auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            width: 90%;
+        }
+
+        ul {
+            list-style: none; /* 불릿 제거 */
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+        }
+
+        strong {
+            color: #333;
+        }
+
+
+        /* 돌아가기 버튼 디자인 */
+        .go-back {
+            width: 40%;
+            padding: 15px 15px;
+            font-size: 18px;
+            color: white;
+            background-color: #FFA07A;
+            border: none;
+            border-radius: 35px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        /* 돌아가기 버튼 호버 효과 */
+        .go-back:hover {
+            background-color: #FF6347;
+            box-shadow: 4px 4px 15px rgba(255, 99, 71, 0.5);
+        }       
+
+    </style>
+</head>
+<body>
+    <header>
+        <!-- 상단바 -->
+        <div id="navbar"></div>
+        <h1>일본어 사전</h1>
+    </header>
+
+    <h2>검색 결과</h2>
+
+    <!-- 검색된 내용 표시 -->
+    <div id="result-container1"></div>
+    <div id="result-container2"></div>
+
+    <!-- 돌아가기 버튼 -->
+    <div>
+        <button type="button" class="go-back" id="back-btn">홈으로 돌아가기</button>
+    </div>
+
+    <script>
+        // 돌아가기 버튼 클릭 이벤트
+        const backBtn = document.querySelector("#back-btn");
+        backBtn.addEventListener("click", () => {
+            window.location.href = `index.html`;
+        });
+
+        // URL에서 쿼리 파라미터 읽기
+        const urlParams = new URLSearchParams(window.location.search);
+        const data1Param = urlParams.get('data1');
+        const data2Param = urlParams.get('data2');
+
+        const resultContainer1 = document.getElementById('result-container1');
+        const resultContainer2 = document.getElementById('result-container2');
+
+        function displayResults(param, container, title) {
+            if (param) {
+                const decodedData = decodeURIComponent(param);
+
+                if (decodedData === 'none') {
+                    container.innerHTML = `<h2>${title}</h2><p>No matching results found.</p>`;
+                } else {
+                    const results = JSON.parse(decodedData);
+                    const count = results.length; // 데이터 개수 계산
+                    container.innerHTML = `
+                        <h2>${title}: ${count}개</h2>
+                        <ul>
+                            ${results
+                                .map(result => `
+                                    <li>
+                                        <strong>Expression:</strong> ${result.expression}<br>
+                                        <strong>Reading:</strong> ${result.reading}<br>
+                                        <strong>Meaning:</strong> ${result.meaning}<br>
+                                        <strong>Difficulty:</strong> ${result.tags}
+                                    </li>
+                                `)
+                                .join('')}
+                        </ul>
+                    `;
+                }
+            } else {
+                container.innerHTML = `<h2>${title}</h2><p>No data provided.</p>`;
+            }
+        }
+
+        // 데이터 1 출력
+        displayResults(data1Param, resultContainer1, "발음이 같은 단어");
+
+        // 데이터 2 출력
+        displayResults(data2Param, resultContainer2, "의미이 같은 단어");
+    </script>
+    <script src="/navbar/navbar.js"></script>  
+</body>
+</html>

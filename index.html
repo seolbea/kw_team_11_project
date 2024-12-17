@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JPDictionary</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="/style.css">
     <link rel="stylesheet" href="/navbar/navbar.css">
 </head>
@@ -15,7 +16,7 @@
     </header>
     <main>
         <!-- 검색창 -->
-        <h2>검색</h2>
+        <h2>검색하기</h2>
         <div class="search-container">
             <section class="search-wrapper">
                 <input type="text" id="searchBox" placeholder="검색어를 입력하세요" />
@@ -25,6 +26,27 @@
                     </svg>
                 </button>
             </section>
+        </div>
+
+        <!-- Difficulty 선택을 위한 라디오 버튼들 -->
+        <div>
+            <input type="radio" name="LevelChoose" id="all" checked>
+            <label for="all">All</label>
+
+            <input type="radio" name="LevelChoose" id="n1">
+            <label for="n1">JLPT N1</label>
+
+            <input type="radio" name="LevelChoose" id="n2">
+            <label for="n2">JLPT N2</label>
+
+            <input type="radio" name="LevelChoose" id="n3">
+            <label for="n3">JLPT N3</label>
+
+            <input type="radio" name="LevelChoose" id="n4">
+            <label for="n4">JLPT N4</label>
+
+            <input type="radio" name="LevelChoose" id="n5">
+            <label for="n5">JLPT N5</label>
         </div>
 
        <section class="quiz-container">
