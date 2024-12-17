@@ -1,34 +1,55 @@
-//todo: localstorage 사용
-const vocabList=['word1','word2','word3'];
+// 현재 로그인한 사용자 불러오기
+const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
 
-const wordBox = document.getElementById('currentWord');
-const checkBtn=document.getElementById('checkBtn');
-const xBtn = document.getElementById('xBtn');
-
-let currentIndex=null;
-
-function showRandomWord(){
-    if(vocabList.length===0){
-        wordBox.textContent = '단어장 체크 완료';
-        return;
-    }
-    currentIndex = Math.floor(Math.random() * vocabList.length);
-    wordBox.textContent = vocabList[currentIndex];
+if (!loggedInUser || !loggedInUser.id) {
+    alert('로그인이 필요합니다.');
+    window.location.href = 'login.html'; // 로그인 페이지로 리디렉션
 }
 
-// 체크버튼 클릭
-checkBtn.addEventListener('click',()=>{
-    if(currentIndex!==null){
-        vocabList.splice(currentIndex,1);
-        currentIndex=null;
-        showRandomWord();
-    }
-});
+// 고유한 키로 단어장 데이터 저장 및 불러오기
+const userKey = `vocab_${loggedInUser.id}`; // 사용자별 고유 단어장 키
+const userData = JSON.parse(localStorage.getItem(userKey)) || { vocabList: [] };
+let vocabList = userData.vocabList || [];
 
-// X 버튼 클릭
-xBtn.addEventListener('click',()=>{
-    if(currentIndex!==null){
-        showRandomWord();
-        //todo: 못외운 단어가 바로 다시 나오지 않고 다음 시험때 나오도록 조정
+// DOM 요소 가져오기
+const vocabListContainer = document.getElementById('vocabList');
+
+// 단어 목록 렌더링
+function renderVocabList() {
+    vocabListContainer.innerHTML = '';
+
+    if (vocabList.length === 0) {
+        vocabListContainer.innerHTML = `<li>나만의 단어장이 비어있습니다.</li>`;
+        return;
     }
-})
+
+    vocabList.forEach((word, index) => {
+        const li = document.createElement('li');
+        li.textContent = word;
+
+        // 삭제 버튼 추가
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '삭제';
+        deleteBtn.addEventListener('click', () => deleteWord(index));
+
+        li.appendChild(deleteBtn);
+        vocabListContainer.appendChild(li);
+    });
+
+    updateUserData();
+}
+
+// 단어 삭제
+function deleteWord(index) {
+    vocabList.splice(index, 1);
+    updateUserData();
+    renderVocabList();
+}
+
+// 사용자 데이터 업데이트
+function updateUserData() {
+    localStorage.setItem(userKey, JSON.stringify({ vocabList }));
+}
+
+// 초기화
+renderVocabList();

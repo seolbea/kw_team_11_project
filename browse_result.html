@@ -31,7 +31,6 @@
             color: #333;
         }
 
-
         /* 돌아가기 버튼 디자인 */
         .go-back {
             width: 40%;
@@ -77,19 +76,19 @@
         backBtn.addEventListener("click", () => {
             window.location.href = `index.html`;
         });
-
+    
         // URL에서 쿼리 파라미터 읽기
         const urlParams = new URLSearchParams(window.location.search);
         const data1Param = urlParams.get('data1');
         const data2Param = urlParams.get('data2');
-
+    
         const resultContainer1 = document.getElementById('result-container1');
         const resultContainer2 = document.getElementById('result-container2');
-
+    
         function displayResults(param, container, title) {
             if (param) {
                 const decodedData = decodeURIComponent(param);
-
+    
                 if (decodedData === 'none') {
                     container.innerHTML = `<h2>${title}</h2><p>No matching results found.</p>`;
                 } else {
@@ -99,12 +98,15 @@
                         <h2>${title}: ${count}개</h2>
                         <ul>
                             ${results
-                                .map(result => `
+                                .map((result, index) => ` 
                                     <li>
                                         <strong>Expression:</strong> ${result.expression}<br>
                                         <strong>Reading:</strong> ${result.reading}<br>
                                         <strong>Meaning:</strong> ${result.meaning}<br>
                                         <strong>Difficulty:</strong> ${result.tags}
+                                        <button onclick="addToVocabList('${result.expression} (${result.reading}) - ${result.meaning}')">
+                                            나만의 단어장에 추가
+                                        </button>
                                     </li>
                                 `)
                                 .join('')}
@@ -115,13 +117,38 @@
                 container.innerHTML = `<h2>${title}</h2><p>No data provided.</p>`;
             }
         }
-
+    
+        // 단어를 단어장에 추가하는 함수
+        function addToVocabList(word) {
+            // 로그인된 사용자 정보 가져오기
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            if (!loggedInUser || !loggedInUser.id) {
+                alert('로그인이 필요합니다.');
+                window.location.href = 'login.html';
+                return;
+            }
+    
+            const userKey = `vocab_${loggedInUser.id}`;
+            const userData = JSON.parse(localStorage.getItem(userKey)) || { vocabList: [] };
+            
+            // 중복 단어 체크
+            if (userData.vocabList.includes(word)) {
+                alert('이미 추가된 단어입니다.');
+                return;
+            }
+    
+            // 단어 추가
+            userData.vocabList.push(word);
+            localStorage.setItem(userKey, JSON.stringify(userData));
+            alert(`"${word}"가 나만의 단어장에 추가되었습니다.`);
+        }
+    
         // 데이터 1 출력
         displayResults(data1Param, resultContainer1, "발음이 같은 단어");
-
+    
         // 데이터 2 출력
-        displayResults(data2Param, resultContainer2, "의미이 같은 단어");
-    </script>
+        displayResults(data2Param, resultContainer2, "의미가 같은 단어");
+    </script>    
     <script src="/navbar/navbar.js"></script>  
 </body>
 </html>

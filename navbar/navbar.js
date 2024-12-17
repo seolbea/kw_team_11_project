@@ -29,29 +29,31 @@ function initNavbar() {
         });
     }
 
-    /* 로그인 버튼 */
+    /* 로그인 및 로그아웃 버튼 */
     const loginButton = document.getElementById("loginButton");
-    const loggedInUser = localStorage.getItem("loggedInUser");
+    const logoutButton = document.getElementById("logoutButton");
+    const loggedInUser = JSON.parse(sessionStorage.getItem("loggedInUser"));
 
     if (loggedInUser) {
         // 로그인 상태일 때
-        loginButton.textContent = `${loggedInUser}님 환영합니다`; // 버튼 텍스트 변경
+        loginButton.textContent = `${loggedInUser.name}님 환영합니다`;
         loginButton.style.pointerEvents = "none"; // 클릭 비활성화
         loginButton.style.cursor = "default"; // 포인터 모양 변경
-        logoutButton.classList.remove("hidden");
+        logoutButton.classList.remove("hidden"); // 로그아웃 버튼 표시
 
+        // 로그아웃 버튼 클릭 이벤트
         logoutButton.addEventListener("click", () => {
-            // 로그아웃 처리
-            localStorage.removeItem("loggedInUser");
+            sessionStorage.removeItem("loggedInUser"); // 로그인 정보 삭제
             alert("로그아웃되었습니다.");
-            window.location.href = "/index.html"; // 페이지 새로고침
+            window.location.href = "/login.html"; // 로그인 페이지로 이동
         });
     } else {
         // 비로그인 상태
         loginButton.classList.remove("hidden");
         logoutButton.classList.add("hidden");
+
         loginButton.addEventListener("click", () => {
-            window.location.href = "/login.html";
+            window.location.href = "/login.html"; // 로그인 페이지로 이동
         });
     }
 
@@ -67,41 +69,37 @@ function initNavbar() {
     document.querySelectorAll(".sub-button").forEach((button, index) => {
         button.addEventListener("click", () => {
             const levels = ["N1", "N2", "N3", "N4", "N5"];
-            // JLPT_N_1to5 폴더 내 words.html로 이동, level 파라미터 전달
             location.href = '/JLPT_N_1to5/words.html?level=' + levels[index].toLowerCase();
         });
     });
 
-    // 등급별 단어 시험 버튼과 팝업 관련
-const examButton = document.getElementById("examButton");
-const popupContainer = document.getElementById("popupContainer");
-const popupOverlay = document.getElementById("popupOverlay");
-const difficultyButtons = document.getElementById("difficultyButtons");
-const closePopup = document.getElementById("closePopup");
-const difficulties = ["N1", "N2", "N3", "N4", "N5"];
+    /* 등급별 단어 시험 버튼과 팝업 관련 */
+    const examButton = document.getElementById("examButton");
+    const popupContainer = document.getElementById("popupContainer");
+    const popupOverlay = document.getElementById("popupOverlay");
+    const difficultyButtons = document.getElementById("difficultyButtons");
+    const closePopup = document.getElementById("closePopup");
+    const difficulties = ["N1", "N2", "N3", "N4", "N5"];
 
-if (examButton && popupContainer && popupOverlay) {
-    examButton.addEventListener("click", () => {
-        popupContainer.style.display = "block";
-        popupOverlay.style.display = "block";
+    if (examButton && popupContainer && popupOverlay) {
+        examButton.addEventListener("click", () => {
+            popupContainer.style.display = "block";
+            popupOverlay.style.display = "block";
 
-        // 난이도 버튼 동적 생성
-        difficultyButtons.innerHTML = ""; // 기존 버튼 초기화
-        difficulties.forEach(difficulty => {
-            const button = document.createElement("button");
-            button.className = "difficulty-button";
-            button.textContent = difficulty;
+            difficultyButtons.innerHTML = ""; // 기존 버튼 초기화
+            difficulties.forEach(difficulty => {
+                const button = document.createElement("button");
+                button.className = "difficulty-button";
+                button.textContent = difficulty;
 
-            // 버튼 클릭 시 해당 난이도의 시험 페이지로 이동
-            button.addEventListener("click", () => {
-                // test.html로 난이도 파라미터 전달
-                window.location.href = `/JLPT_N_1to5/test.html?level=${difficulty.toLowerCase()}`;
+                button.addEventListener("click", () => {
+                    window.location.href = `/JLPT_N_1to5/test.html?level=${difficulty.toLowerCase()}`;
+                });
+
+                difficultyButtons.appendChild(button);
             });
-
-            difficultyButtons.appendChild(button);
         });
-    });
-}
+    }
 
     // 팝업 닫기 이벤트
     const closePopupHandler = () => {
