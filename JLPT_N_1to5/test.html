@@ -114,6 +114,19 @@
             gap: 20px;
             margin-top: 20px;
         }
+
+        /* 단어장에 추가 버튼 디자인 */
+        .to-voca {
+            color: white;
+            background-color: #FFA07A;
+            border: none;
+            border-radius: 35px;
+        }
+
+        .to-voca:hover {
+            background-color: #FF6347;
+            box-shadow: 4px 4px 15px rgba(255, 99, 71, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -127,6 +140,30 @@
     </div>
 
     <script>
+        function addToVocabList(word) {
+            // 로그인된 사용자 정보 가져오기
+            const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
+            if (!loggedInUser || !loggedInUser.id) {
+                alert('로그인이 필요합니다.');
+                window.location.href = '../login.html';
+                return;
+            }
+    
+            const userKey = `vocab_${loggedInUser.id}`;
+            const userData = JSON.parse(localStorage.getItem(userKey)) || { vocabList: [] };
+            
+            // 중복 단어 체크
+            if (userData.vocabList.includes(word)) {
+                alert('이미 추가된 단어입니다.');
+                return;
+            }
+    
+            // 단어 추가
+            userData.vocabList.push(word);
+            localStorage.setItem(userKey, JSON.stringify(userData));
+            alert(`"${word}"가 나만의 단어장에 추가되었습니다.`);
+        }
+
         // URL 파라미터 읽기
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -200,10 +237,20 @@
             const quizCard = document.createElement("div");
             quizCard.className = "quiz-card";
 
+            // 문제 텍스트
             const question = document.createElement("p");
             question.className = "quiz-word";
             question.textContent = `(${quizCount}/${maxQuizCount}) 다음 단어의 뜻은 무엇일까요? "${correctAnswer.expression}"`;
 
+            // 단어장 추가 버튼
+            const vocabButton = document.createElement("button");
+            vocabButton.className = "to-voca";
+            vocabButton.textContent = "나만의 단어장에 추가";
+            vocabButton.onclick = () => addToVocabList(
+                `${correctAnswer.expression} (${correctAnswer.reading}) - ${correctAnswer.meaning}`
+            );
+
+            // 선택지 표시
             const optionsList = document.createElement("ul");
             optionsList.className = "options";
             options.forEach(option => {
@@ -218,11 +265,16 @@
                 optionsList.appendChild(item);
             });
 
-            quizCard.appendChild(question);
-            quizCard.appendChild(optionsList);
+            // 구성 요소 추가
+            quizCard.appendChild(question);     // 문제 텍스트 추가
+            quizCard.appendChild(vocabButton); // 단어장 추가 버튼 추가
+            quizCard.appendChild(optionsList); // 선택지 추가
 
+            // 퀴즈 컨테이너에 추가
             quizArea.appendChild(quizCard);
         }
+
+        
 
         // 정답 확인 및 결과 표시
         function checkAnswer(button, selectedOption, correctAnswer, allWords, item) {

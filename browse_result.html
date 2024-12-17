@@ -48,8 +48,20 @@
         .go-back:hover {
             background-color: #FF6347;
             box-shadow: 4px 4px 15px rgba(255, 99, 71, 0.5);
-        }       
+        }  
+        
+        /* 단어장에 추가 버튼 디자인 */
+        .to-voca {
+            color: white;
+            background-color: #FFA07A;
+            border: none;
+            border-radius: 35px;
+        }
 
+        .to-voca:hover {
+            background-color: #FF6347;
+            box-shadow: 4px 4px 15px rgba(255, 99, 71, 0.5);
+        }
     </style>
 </head>
 <body>
@@ -104,7 +116,7 @@
                                         <strong>Reading:</strong> ${result.reading}<br>
                                         <strong>Meaning:</strong> ${result.meaning}<br>
                                         <strong>Difficulty:</strong> ${result.tags}
-                                        <button onclick="addToVocabList('${result.expression} (${result.reading}) - ${result.meaning}')">
+                                        <button class="to-voca" onclick="addToVocabList('${result.expression} (${result.reading}) - ${result.meaning}')">
                                             나만의 단어장에 추가
                                         </button>
                                     </li>
